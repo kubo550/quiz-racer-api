@@ -10,6 +10,7 @@ const envSchema = z.object({
   }),
   mongo: z.object({
     url: z.string(),
+    dbName: z.string(),
   }),
 });
 
@@ -33,13 +34,14 @@ class Config {
 
   #loadEnv() {
     console.log('Loading environment variables');
-    const env = {
+    const env: z.infer<typeof envSchema> = {
       app: {
         environment: process.env.ENVIRONMENT,
         port: process.env.PORT,
       },
       mongo: {
         url: process.env.MONGO_URL,
+        dbName: process.env.MONGO_DB_NAME,
       },
     };
 
