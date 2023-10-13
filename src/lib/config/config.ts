@@ -33,7 +33,6 @@ class Config {
   }
 
   #loadEnv() {
-    console.log('Loading environment variables');
     const env: z.infer<typeof envSchema> = {
       app: {
         environment: process.env.ENVIRONMENT,
