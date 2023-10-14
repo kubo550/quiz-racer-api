@@ -17,7 +17,6 @@ export class ModulesService {
   }
 
   findAll() {
-    console.log('findAll');
     return this.moduleModel.find({}, { _id: 0, __v: 0 }).exec();
   }
 
@@ -26,8 +25,7 @@ export class ModulesService {
   }
 
   update(id: number, updateModuleDto: UpdateModuleDto) {
-    console.log('update', updateModuleDto);
-    return `This action updates a #${id} module`;
+    return `This action updates a #${id} module, ${updateModuleDto}`;
   }
 
   remove(id: number) {

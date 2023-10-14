@@ -1,6 +1,6 @@
-import { MongoMemoryConfigService } from '../test/utils/mongo-memory-config.service';
 import supertest from 'supertest';
 import { setupServer } from '../test/utils/setup-server';
+import { MongoMemoryConfigService } from '../test/utils/mongo-memory-config.service';
 
 describe('modules', () => {
   let mongoMemoryConfigService: MongoMemoryConfigService;
@@ -17,6 +17,7 @@ describe('modules', () => {
 
   it('should return modules from db', async () => {
     const app = await setupServer();
+
     const response = await fetchModules(app);
 
     expect(response.status).toBe(200);
