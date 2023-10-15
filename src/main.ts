@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { config } from './lib/config/config';
 import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
   await config.load();
@@ -12,6 +13,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
+  app.use(helmet());
   const port = config.get().app.port;
   await app.listen(port);
 }
