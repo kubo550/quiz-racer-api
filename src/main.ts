@@ -6,6 +6,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { config } from './lib/config/config';
 import { logger } from './lib/logger/logger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   await config.load();
@@ -19,6 +20,7 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
 
   const port = config.get().app.port;
   await app.listen(port);
