@@ -1,48 +1,28 @@
-class Logger {
-  log(message: string, ...optionalParams: unknown[]) {
-    // eslint-disable-next-line no-console
-    console.log(
-      '\x1b[32m%s\x1b[0m',
-      `[Logger] - [${new Date().toISOString()}] [INFO]: ${message}`,
-      optionalParams || '',
-    );
-  }
+import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 
-  warn(message: string, ...optionalParams: unknown[]) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      '\x1b[33m%s\x1b[0m',
-      `[Logger] - [${new Date().toISOString()}] [WARN]: ${message}`,
-      optionalParams || '',
-    );
-  }
+import { Request, Response, NextFunction } from 'express';
 
-  error(message: string, ...optionalParams: unknown[]) {
-    // eslint-disable-next-line no-console
-    console.error(
-      '\x1b[31m%s\x1b[0m',
-      `[Logger] - [${new Date().toISOString()}] [ERROR]: ${message}`,
-      optionalParams || '',
-    );
-  }
+@Injectable()
+export class AppLoggerMiddleware implements NestMiddleware {
+  private logger = new Logger('HTTP');
 
-  debug?(message: string, ...optionalParams: unknown[]) {
-    // eslint-disable-next-line no-console
-    console.debug(
-      '\x1b[34m%s\x1b[0m',
-      `[Logger] - [${new Date().toISOString()}] [DEBUG]: ${message}`,
-      optionalParams || '',
-    );
-  }
+  use(request: Request, response: Response, next: NextFunction): void {
+    const startAt = process.hrtime();
+    const { ip, method, originalUrl } = request;
+    const userAgent = request.get('user-agent') || '';
 
-  verbose?(message: string, ...optionalParams: unknown[]) {
-    // eslint-disable-next-line no-console
-    console.debug(
-      '\x1b[34m%s\x1b[0m',
-      `[Logger] - [${new Date().toISOString()}] [VERBOSE]: ${message}`,
-      optionalParams || '',
-    );
+    this.logger.log(`Request ${method} ${originalUrl} ${userAgent} ${ip}`);
+
+    response.on('finish', () => {
+      const { statusCode } = response;
+      const contentLength = response.get('content-length');
+      const diff = process.hrtime(startAt);
+      const responseTime = diff[0] * 1e3 + diff[1] * 1e-6;
+      this.logger.log(
+        `Response ${method} ${originalUrl} ${statusCode} ${responseTime}ms ${contentLength} - ${userAgent} ${ip}`,
+      );
+    });
+
+    next();
   }
 }
-
-export const logger = new Logger();

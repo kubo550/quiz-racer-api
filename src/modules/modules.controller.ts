@@ -13,7 +13,6 @@ import { ModulesService } from './modules.service';
 import { CreateModuleDto } from './dto/create-module.dto';
 
 import { UpdateModuleDto } from './dto/update-module.dto';
-import { logger } from '../lib/logger/logger';
 
 @Controller('modules')
 export class ModulesController {
@@ -22,19 +21,13 @@ export class ModulesController {
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() createModuleDto: CreateModuleDto) {
-    logger.log('modules controller - create', { createModuleDto });
-
     const created = await this.moduleService.create(createModuleDto);
     return { id: created.id };
   }
 
   @Get()
   async findAll() {
-    logger.log('modules controller - findAll');
     const modules = await this.moduleService.findAll();
-    logger.log('modules controller - found all modules', {
-      length: modules.length,
-    });
     return { modules };
   }
 
