@@ -14,6 +14,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   app.use(helmet());
+  app.enableCors();
+
   const port = config.get().app.port;
   await app.listen(port);
 }
