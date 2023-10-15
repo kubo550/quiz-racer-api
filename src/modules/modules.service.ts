@@ -4,6 +4,7 @@ import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
 import { Module as ModuleModel } from './modules.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class ModulesService {
@@ -12,7 +13,7 @@ export class ModulesService {
   ) {}
 
   create(createModuleDto: CreateModuleDto) {
-    const createdModule = new this.moduleModel(createModuleDto);
+    const createdModule = new this.moduleModel({ id: v4(), createModuleDto });
     return createdModule.save();
   }
 
